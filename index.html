@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Kawaii Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Google Fonts: 丸みのある日本語フォント */
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background-color: #FFFDE7; /* Very Light Yellow */
+            color: #5D4037; /* Dark Brown for text */
+            overflow-x: hidden;
+        }
+
+        /* カスタムカラー設定 */
+        .bg-kawaii-yellow { background-color: #FFF59D; }
+        .bg-kawaii-blue { background-color: #81D4FA; }
+        .bg-kawaii-pink { background-color: #FFAB91; }
+        
+        .text-kawaii-brown { color: #4E342E; }
+
+        /* ふわふわ浮遊アニメーション */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        .animate-float-delay {
+            animation: float 4s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+
+        /* 背景のドットパターン */
+        .bg-pattern {
+            background-image: radial-gradient(#81D4FA 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        /* クリップパスで作る雲の形 */
+        .cloud-shape {
+            clip-path: polygon(
+                0% 50%, 10% 40%, 20% 50%, 30% 35%, 50% 50%, 
+                70% 30%, 90% 50%, 100% 60%, 90% 80%, 70% 90%, 
+                50% 80%, 30% 90%, 10% 80%, 0% 60%
+            );
+            /* 簡易的な形状ですが、CSSのみで表現する場合はborder-radiusを組み合わせた方が綺麗です。
+               今回はdivを重ねて雲を作ります */
+        }
+
+        /* かわいいスクロールバー */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFFDE7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #81D4FA;
+            border-radius: 10px;
+            border: 3px solid #FFFDE7;
+        }
+    </style>
+</head>
+<body class="bg-pattern relative">
+
+    <!-- 背景装飾（雲や星） -->
+    <div class="fixed top-20 left-10 text-yellow-300 opacity-50 animate-float z-[-1]">
+        <i data-lucide="star" size="48" fill="currentColor"></i>
+    </div>
+    <div class="fixed bottom-40 right-10 text-sky-300 opacity-50 animate-float-delay z-[-1]">
+        <i data-lucide="cloud" size="64" fill="currentColor"></i>
+    </div>
+    <div class="fixed top-40 right-20 text-pink-300 opacity-40 animate-float z-[-1]">
+        <i data-lucide="heart" size="32" fill="currentColor"></i>
+    </div>
+
+    <!-- ナビゲーション -->
+    <nav class="fixed w-full z-50 top-0 start-0 bg-white/80 backdrop-blur-md border-b-4 border-sky-200">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="#" class="flex items-center space-x-2 rtl:space-x-reverse group">
+                <div class="bg-yellow-300 p-2 rounded-full group-hover:rotate-12 transition-transform">
+                    <i data-lucide="smile" class="text-white" size="28"></i>
+                </div>
+                <span class="self-center text-2xl font-extrabold whitespace-nowrap text-sky-400 tracking-wider">PORTFOLIO</span>
+            </a>
+            <button id="nav-toggle" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                <span class="sr-only">Open main menu</span>
+                <i data-lucide="menu"></i>
+            </button>
+            <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+                <ul class="font-bold flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-transparent">
+                    <li>
+                        <a href="#home" class="block py-2 px-3 text-gray-600 rounded hover:bg-yellow-100 md:hover:bg-transparent md:border-0 md:hover:text-yellow-400 md:p-0 transition-colors">Home</a>
+                    </li>
+                    <li>
+                        <a href="#about" class="block py-2 px-3 text-gray-600 rounded hover:bg-yellow-100 md:hover:bg-transparent md:border-0 md:hover:text-yellow-400 md:p-0 transition-colors">About</a>
+                    </li>
+                    <li>
+                        <a href="#works" class="block py-2 px-3 text-gray-600 rounded hover:bg-yellow-100 md:hover:bg-transparent md:border-0 md:hover:text-yellow-400 md:p-0 transition-colors">Works</a>
+                    </li>
+                    <li>
+                        <a href="#contact" class="block py-2 px-3 text-white bg-sky-400 rounded-full md:px-6 hover:bg-sky-500 transition-colors shadow-[4px_4px_0px_0px_rgba(186,230,253,1)]">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- モバイルメニュー用スクリプト -->
+    <script>
+        document.getElementById('nav-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('navbar-default');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+
+    <!-- ヒーローセクション -->
+    <section id="home" class="min-h-screen flex items-center justify-center pt-20 px-4">
+        <div class="max-w-5xl w-full grid md:grid-cols-2 gap-12 items-center">
+            <div class="order-2 md:order-1 text-center md:text-left">
+                <div class="inline-block bg-yellow-100 text-yellow-600 px-4 py-1 rounded-full font-bold mb-4 border-2 border-yellow-300 transform rotate-[-2deg]">
+                    Hello, World! ✨
+                </div>
+                <h1 class="text-4xl md:text-6xl font-black text-kawaii-brown mb-6 leading-tight">
+                    つくること、<br>
+                    <span class="text-sky-400 relative inline-block">
+                        たのしむこと。
+                        <svg class="absolute -bottom-2 left-0 w-full h-3 text-yellow-300 opacity-70" viewBox="0 0 100 10" preserveAspectRatio="none">
+                            <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" />
+                        </svg>
+                    </span>
+                </h1>
+                <p class="text-lg text-gray-600 mb-8 leading-relaxed font-bold">
+                    Webデザイナー & イラストレーターの<br>
+                    ポートフォリオサイトへようこそ。<br>
+                    かわいくて使いやすいデザインを作ります。
+                </p>
+                <div class="flex gap-4 justify-center md:justify-start">
+                    <a href="#works" class="inline-flex items-center justify-center px-8 py-3 text-base font-bold text-white bg-yellow-400 rounded-2xl shadow-[4px_4px_0px_0px_rgba(253,216,53,0.5)] hover:translate-y-1 hover:shadow-none transition-all">
+                        作品を見る
+                    </a>
+                    <a href="#contact" class="inline-flex items-center justify-center px-8 py-3 text-base font-bold text-sky-500 bg-white border-2 border-sky-200 rounded-2xl shadow-[4px_4px_0px_0px_rgba(186,230,253,1)] hover:translate-y-1 hover:shadow-none transition-all">
+                        お問い合わせ
+                    </a>
+                </div>
+            </div>
+            
+            <div class="order-1 md:order-2 flex justify-center">
+                <div class="relative w-72 h-72 md:w-96 md:h-96">
+                    <!-- プロフィール画像エリア（blob shape） -->
+                    <div class="absolute inset-0 bg-sky-200 rounded-[60%_40%_30%_70%/60%_30%_70%_40%] animate-float opacity-60"></div>
+                    <div class="absolute inset-0 bg-yellow-200 rounded-[30%_70%_70%_30%/30%_30%_70%_70%] animate-float-delay opacity-60 rotate-12"></div>
+                    <div class="absolute inset-4 bg-white rounded-[50%] overflow-hidden border-4 border-white shadow-lg flex items-center justify-center z-10">
+                        <!-- ここに画像を入れる -->
+                        <div class="text-center">
+                            <i data-lucide="cat" class="w-24 h-24 mx-auto text-gray-300 mb-2"></i>
+                            <span class="text-gray-400 font-bold">My Photo</span>
+                        </div>
+                    </div>
+                    <!-- 装飾アイコン -->
+                    <div class="absolute -top-4 -right-4 bg-white p-3 rounded-full shadow-md text-yellow-400 animate-bounce">
+                        <i data-lucide="sparkles"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white/50 backdrop-blur-sm relative">
+        <!-- 波線ボーダー -->
+        <div class="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180">
+            <svg class="relative block w-[calc(130%+1.3px)] h-[50px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="fill-[#FFFDE7]"></path>
+            </svg>
+        </div>
+
+        <div class="container mx-auto px-6 max-w-5xl">
+            <div class="text-center mb-16">
+                <span class="text-sky-400 font-bold tracking-widest uppercase">Profile</span>
+                <h2 class="text-3xl md:text-4xl font-black text-kawaii-brown mt-2">私について</h2>
+                <div class="w-16 h-2 bg-yellow-300 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 bg-white p-8 md:p-12 rounded-3xl shadow-[8px_8px_0px_0px_rgba(224,242,254,1)] border-2 border-sky-100">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+                        <i data-lucide="user" class="text-sky-400"></i>
+                        Web Designer
+                    </h3>
+                    <p class="text-gray-600 leading-loose mb-6">
+                        はじめまして！福岡在住のWebデザイナーです。<br>
+                        「見ていて楽しくなる」「また来たくなる」そんなWebサイト作りを心がけています。<br>
+                        デザインだけでなく、HTML/CSS/JavaScriptを使ったコーディングも大好きです。
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-yellow-100 p-2 rounded-lg text-yellow-500">
+                                <i data-lucide="map-pin" size="20"></i>
+                            </div>
+                            <span class="font-bold text-gray-600">Fukuoka, Japan</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-pink-100 p-2 rounded-lg text-pink-400">
+                                <i data-lucide="heart" size="20"></i>
+                            </div>
+                            <span class="font-bold text-gray-600">カフェ巡り、お絵かき、猫</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-700 mb-6 flex items-center gap-2">
+                        <i data-lucide="wrench" class="text-yellow-400"></i>
+                        Skills
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-4 py-2 bg-sky-50 text-sky-600 font-bold rounded-xl border-2 border-sky-100">HTML5</span>
+                        <span class="px-4 py-2 bg-sky-50 text-sky-600 font-bold rounded-xl border-2 border-sky-100">CSS3</span>
+                        <span class="px-4 py-2 bg-yellow-50 text-yellow-600 font-bold rounded-xl border-2 border-yellow-100">JavaScript</span>
+                        <span class="px-4 py-2 bg-pink-50 text-pink-600 font-bold rounded-xl border-2 border-pink-100">Figma</span>
+                        <span class="px-4 py-2 bg-purple-50 text-purple-600 font-bold rounded-xl border-2 border-purple-100">Illustrator</span>
+                        <span class="px-4 py-2 bg-blue-50 text-blue-600 font-bold rounded-xl border-2 border-blue-100">React</span>
+                        <span class="px-4 py-2 bg-green-50 text-green-600 font-bold rounded-xl border-2 border-green-100">Tailwind CSS</span>
+                    </div>
+
+                    <div class="mt-8 p-4 bg-gray-50 rounded-2xl border-dashed border-2 border-gray-200">
+                        <p class="text-sm text-gray-500 text-center font-bold">
+                            現在、Three.jsを使った3D表現を勉強中です！
+                            <i data-lucide="loader" class="inline w-4 h-4 ml-1 animate-spin"></i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Works Section -->
+    <section id="works" class="py-20 relative">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <div class="text-center mb-16">
+                <span class="text-yellow-500 font-bold tracking-widest uppercase">Portfolio</span>
+                <h2 class="text-3xl md:text-4xl font-black text-kawaii-brown mt-2">制作実績</h2>
+                <div class="w-16 h-2 bg-sky-300 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="group bg-white rounded-3xl overflow-hidden border-2 border-gray-100 hover:border-yellow-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_rgba(253,216,53,0.4)]">
+                    <div class="bg-yellow-100 h-48 flex items-center justify-center relative overflow-hidden">
+                        <i data-lucide="image" class="text-yellow-300 w-16 h-16"></i>
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex gap-2 mb-3">
+                            <span class="text-xs font-bold px-2 py-1 bg-sky-100 text-sky-600 rounded-md">Web Design</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-700 mb-2">カフェのLPデザイン</h3>
+                        <p class="text-gray-500 text-sm mb-4">明るく親しみやすいカフェのランディングページを作成しました。</p>
+                        <a href="#" class="inline-flex items-center text-yellow-500 font-bold hover:underline">
+                            詳しく見る <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group bg-white rounded-3xl overflow-hidden border-2 border-gray-100 hover:border-sky-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_rgba(129,212,250,0.4)]">
+                    <div class="bg-sky-100 h-48 flex items-center justify-center relative overflow-hidden">
+                        <i data-lucide="shopping-bag" class="text-sky-300 w-16 h-16"></i>
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex gap-2 mb-3">
+                            <span class="text-xs font-bold px-2 py-1 bg-pink-100 text-pink-600 rounded-md">EC Site</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-700 mb-2">ハンドメイドショップ</h3>
+                        <p class="text-gray-500 text-sm mb-4">雑貨を販売するECサイトのデザインとコーディングを担当。</p>
+                        <a href="#" class="inline-flex items-center text-sky-400 font-bold hover:underline">
+                            詳しく見る <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group bg-white rounded-3xl overflow-hidden border-2 border-gray-100 hover:border-pink-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_rgba(255,171,145,0.4)]">
+                    <div class="bg-pink-100 h-48 flex items-center justify-center relative overflow-hidden">
+                        <i data-lucide="smartphone" class="text-pink-300 w-16 h-16"></i>
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex gap-2 mb-3">
+                            <span class="text-xs font-bold px-2 py-1 bg-purple-100 text-purple-600 rounded-md">App UI</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-700 mb-2">天気予報アプリUI</h3>
+                        <p class="text-gray-500 text-sm mb-4">毎日の天気が楽しくなるようなかわいいUIデザイン。</p>
+                        <a href="#" class="inline-flex items-center text-pink-400 font-bold hover:underline">
+                            詳しく見る <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 relative overflow-hidden">
+        <!-- 背景の装飾円 -->
+        <div class="absolute -right-20 bottom-0 w-64 h-64 bg-yellow-200 rounded-full opacity-50 blur-3xl"></div>
+        <div class="absolute -left-20 top-20 w-64 h-64 bg-sky-200 rounded-full opacity-50 blur-3xl"></div>
+
+        <div class="container mx-auto px-6 max-w-2xl relative z-10">
+            <div class="bg-white/80 backdrop-blur-md p-8 md:p-12 rounded-[40px] border-4 border-white shadow-xl">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-black text-kawaii-brown mb-4">Contact Me</h2>
+                    <p class="text-gray-600 font-bold">お仕事のご依頼やご相談など、<br>お気軽にお問い合わせください。</p>
+                </div>
+
+                <form class="space-y-6" onsubmit="event.preventDefault(); alert('送信デモです！かわいいメッセージをありがとうございます！');">
+                    <div>
+                        <label for="name" class="block text-sm font-bold text-gray-700 mb-2 ml-2">お名前</label>
+                        <input type="text" id="name" class="w-full px-6 py-4 bg-gray-50 border-2 border-gray-100 text-gray-800 text-sm rounded-2xl focus:ring-sky-200 focus:border-sky-300 block transition-all outline-none" placeholder="山田 花子" required>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-bold text-gray-700 mb-2 ml-2">メールアドレス</label>
+                        <input type="email" id="email" class="w-full px-6 py-4 bg-gray-50 border-2 border-gray-100 text-gray-800 text-sm rounded-2xl focus:ring-sky-200 focus:border-sky-300 block transition-all outline-none" placeholder="name@example.com" required>
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-bold text-gray-700 mb-2 ml-2">メッセージ</label>
+                        <textarea id="message" rows="4" class="w-full px-6 py-4 bg-gray-50 border-2 border-gray-100 text-gray-800 text-sm rounded-2xl focus:ring-sky-200 focus:border-sky-300 block transition-all outline-none resize-none" placeholder="ここにメッセージを入力してください..." required></textarea>
+                    </div>
+                    <div class="text-center pt-4">
+                        <button type="submit" class="w-full md:w-auto px-12 py-4 text-white bg-sky-400 hover:bg-sky-500 font-bold rounded-2xl text-lg shadow-[4px_4px_0px_0px_rgba(186,230,253,1)] hover:shadow-none hover:translate-y-1 transition-all flex items-center justify-center gap-2 mx-auto">
+                            <i data-lucide="send"></i>
+                            送信する
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white pt-12 pb-8 border-t-4 border-sky-100">
+        <div class="container mx-auto px-6 text-center">
+            <div class="flex justify-center gap-6 mb-8">
+                <a href="#" class="w-12 h-12 flex items-center justify-center rounded-full bg-sky-50 text-sky-400 hover:bg-sky-400 hover:text-white transition-colors">
+                    <i data-lucide="twitter"></i>
+                </a>
+                <a href="#" class="w-12 h-12 flex items-center justify-center rounded-full bg-pink-50 text-pink-400 hover:bg-pink-400 hover:text-white transition-colors">
+                    <i data-lucide="instagram"></i>
+                </a>
+                <a href="#" class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-50 text-slate-600 hover:bg-slate-600 hover:text-white transition-colors">
+                    <i data-lucide="github"></i>
+                </a>
+            </div>
+            <p class="text-gray-400 font-bold text-sm">
+                © 2025 Kawaii Portfolio. All Rights Reserved.
+            </p>
+            <div class="mt-4">
+                <span class="inline-block bg-yellow-100 text-yellow-600 text-xs px-3 py-1 rounded-full font-bold">
+                    Designed with 💛 & 💙
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Initialize Icons -->
+    <script>
+        lucide.createIcons();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
